@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.course.app.web"/>
+
+    <mvc:annotation-driven/>
+
+    <bean id="artistDataBaseDAO" class="com.course.app.dao.db.ArtistsDataBaseDAO">
+        <constructor-arg ref="factory"/>
+    </bean>
+
+    <bean id="genreDataBaseDAO" class="com.course.app.dao.db.GenreDataBaseDAO">
+        <constructor-arg ref="factory"/>
+    </bean>
+
+    <bean id="votesDataBaseDAO" class="com.course.app.dao.db.VotesDataBaseDAO">
+        <constructor-arg ref="factory"/>
+    </bean>
+
+    <bean id="artistService" class="com.course.app.services.ArtistService">
+        <constructor-arg index="0" ref="artistDataBaseDAO"/>
+    </bean>
+
+    <bean id="genreService" class="com.course.app.services.GenreService">
+        <constructor-arg index="0" ref="genreDataBaseDAO"/>
+    </bean>
+
+    <bean id="statisticService" class="com.course.app.services.StatisticService">
+        <constructor-arg name="voteService" ref="voteService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+    </bean>
+
+    <bean id="voteService" class="com.course.app.services.VoteService">
+        <constructor-arg name="votesDAO" ref="votesDataBaseDAO"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+    </bean>
+
+    <bean id="factory" class="com.course.app.dao.db.orm.hibernate.factories.EntityManagerFactorySingleton"
+          factory-method="getInstance"/>
+
+</beans>
