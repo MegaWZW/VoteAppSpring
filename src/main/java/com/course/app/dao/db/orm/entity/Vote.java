@@ -2,14 +2,13 @@ package com.course.app.dao.db.orm.entity;
 
 import com.course.app.dto.GenreDTO;
 import com.course.app.dto.VoteDTO;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "app.vote")
@@ -19,22 +18,24 @@ public class Vote implements Serializable {
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
+	@Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
 	@JoinTable(name = "app.vote_artist",
 			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
 	private Artist artist;
 
 	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(value = {org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.PERSIST})
 	@JoinTable(name = "app.vote_genre",
 			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
-	private List<Genre> genres;
+	private Set<Genre> genres = new HashSet<>();
 
 	private LocalDateTime dtCreate;
 	private String about;
 
-	public Vote(Artist artist, List<Genre> genres, LocalDateTime dtCreate, String about) {
+	public Vote(Artist artist, Set<Genre> genres, LocalDateTime dtCreate, String about) {
 		this.artist = artist;
 		this.genres = genres;
 		this.dtCreate = dtCreate;
@@ -43,7 +44,6 @@ public class Vote implements Serializable {
 
 	public Vote (VoteDTO voteDTO) {
 		this.artist = new Artist(voteDTO.getArtist());
-		this.genres = new ArrayList<>();
 		for(GenreDTO item : voteDTO.getGenres()){
 			this.genres.add(new Genre(item));
 		}
@@ -68,11 +68,11 @@ public class Vote implements Serializable {
 		this.artist = artist;
 	}
 
-	public List<Genre> getGenres() {
+	public Set<Genre> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<Genre> genres) {
+	public void setGenres(Set<Genre> genres) {
 		this.genres = genres;
 	}
 

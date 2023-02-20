@@ -76,8 +76,8 @@ public class VoteService implements IVoteService {
 	}
 
 	private boolean checkIfInstanceVariablesNotNull(VoteDTO dto) {
-		return dto.getId() != null && dto.getArtist() != null
-				&& dto.getGenres() != null && dto.getAbout() != null && dto.getDtCreate() != null;
+		return  dto.getArtist() != null
+				&& dto.getGenres() != null && dto.getAbout() != null;
 	}
 
 	private boolean checkIfIsBlank (String toCheck){

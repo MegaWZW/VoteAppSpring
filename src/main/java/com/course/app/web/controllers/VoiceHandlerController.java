@@ -39,12 +39,11 @@ public class VoiceHandlerController {
 		Long[] genresId = dto.getGenresId();
 		String text = dto.getAbout();
 
-		ArtistDTO artistDTO = new ArtistDTO(artistId, artistService.getOne(artistId).getName());
+		ArtistDTO artistDTO = artistService.getOne(artistId);
 
 		Set<GenreDTO> setGenresDTO = new HashSet<>();
 		for(Long id : genresId) {
-			GenreDTO genreDTO = new GenreDTO(id,
-					genreService.getOne(id).getName());
+			GenreDTO genreDTO = genreService.getOne(id);
 			setGenresDTO.add(genreDTO);
 		}
 

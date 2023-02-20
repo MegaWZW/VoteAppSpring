@@ -54,7 +54,7 @@ public class VotesDataBaseDAO implements IVotesDAO {
 		EntityManager em = factory.createEntityManager();
 		try{
 			em.getTransaction().begin();
-			em.persist(entity);
+			em.merge(entity);
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			if(em.getTransaction() != null && em.getTransaction().isActive()){
